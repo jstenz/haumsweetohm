@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Gestion des groupes de laumio</title>
+        <link rel="stylesheet" type="text/css" href="/static/style.css">
+    </head>
+    <body>
+        <h2>Gestion des groupes de laumio</h2>
+        <div id="listLum"></div><br/>
+        <div id="listGrp" ondrop="drop(event)" ondragover="dover(event)">
+            <span class="addBtn" onclick="addGrp()">+</span>
+        </div>
+        <br style="clear:both"/><hr/>
+        <h2>Gestion des scénarios</h2>
+        <div id="listScn"></div><br/>
+        <span class="addBtn" onclick="addScn()">+</span>
+    </body>
+    <script>
+        var listGroup = [];
+        fetch('http://localhost:3000/groupe')
+            .then(function(response) {
+                return response.json();
+            }).then(function(myJson) {
+                var listLum = document.getElementById('listLum');
+                myJson[0].forEach(lum => {
+                    listLum.innerHTML += '<div ondragstart="drag(event)" draggable=true class=laumio>'+lum+'</div>';
+                });
+            });
+        function addGrp() {
+            document.getElementById('listGrp').innerHTML += '<div class="grp"></div>';
+        }
+        function addScn() {
+            console.log(listGroup);
+            var optGrp = '';
+            var n = 1;
+            listGroup.forEach(og => {
+                optGrp += '<option value="'+(n++)+'">'+og+'</option>';
+            });
+            document.getElementById('listScn').innerHTML += '<div class="scn">'+
+                'Evenement : <select class="event" onchange="save(this.parentNode)">'+
+                    '<option>Bouton1</option>'+
+                    '<option>Bouton2</option>'+
+                    '<option>Bouton3</option>'+
+                    '<option>Bouton4</option>'+
+                '</select><br/>'+
+                'Groupe : <select class="group" onchange="save(this.parentNode)">'+
+                    optGrp+
+                '</select><br/>'+
+                'Action : <select class="action" onchange="save(this.parentNode)">'+
+                    '<option>Clignote</option>'+
+                    '<option>Arc-en-ciel</option>'+
+                    '<option>Radar</option>'+
+                '</select><br/>'+
+            '</div>';
+        }
+        function save(scn) {
+            var dataOut = {
+                'event': scn.querySelector('.event').value,
+                'group': scn.querySelector('.group').value,
+                'action': scn.querySelector('.action').value
+            };
+            fetch('http://localhost:3000/setscenario', {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(dataOut)
+            }).then(response => response.json());
+        }
+        
+        var target = undefined;
+        function drag( e ) {
+            e.dataTransfer.setData("text", JSON.stringify(e.target));
+            target = e.target;
+            console.log(e);
+        }
+        function drop( e ) {
+            if (e.target.className == 'grp') e.preventDefault();
+            var tmp = target.outerHTML;
+            console.log(tmp);
+            target.parentNode.removeChild(target);
+            e.target.innerHTML += tmp;
+            listGroup = [];
+            document.querySelectorAll('div.grp').forEach(grp => {
+                var lstLum = [];
+                grp.querySelectorAll('div.laumio').forEach(lum => {
+                   lstLum.push(lum.innerHTML); 
+                });
+                listGroup.push(lstLum);
+            });
+            fetch('http://localhost:3000/setgroupe', {
+                method: "POST",
+                headers: { "Content-Type": "application/json", },
+                body: JSON.stringify({'data':listGroup}) // body data type must match "Content-Type" header
+            }).then(response => response.json());
+        }
+        function dover( e ) {
+            if (e.target.className == 'grp') e.preventDefault();
+        }
+    </script>
+</html>

@@ -1,0 +1,58 @@
+html, body {
+	font-family: arial;
+	background: #DDD;
+}
+
+#listLum {
+	min-height: 100px;
+	border: 8px dotted #543;
+	border-radius: 24px;
+}
+
+#listLum > div, #listGrp > div > div {
+	font-weight: bold;
+	display: inline-block;
+	height: 100px;
+	width: 100px;
+	margin: 7px;
+	background: #FFE;
+	border-radius: 50px;
+	box-shadow: 0 1px 2px 0 #333, -10px -10px 30px 0 #333 inset;
+}
+
+#listGrp > div {
+	float: left;
+	min-height: 115px;
+	min-width: 115px;
+	max-width: 500px;
+	margin: 7px;
+	padding-right: 70px;
+	background: #FFE;
+	box-shadow: 0 1px 2px 0 #333;
+	border-radius: 24px;
+}
+
+.addBtn {
+	cursor: pointer;
+	font-size: 34px;
+	display: inline-block;
+	text-align: center;
+	height: 40px;
+	width: 40px;
+	margin: 7px;
+	background: #FFE;
+	border-radius: 50px;
+	box-shadow: 0 1px 2px 0 #333;
+}
+
+.scn {
+	display: inline-block;
+	text-align: center;
+	min-height: 90px;
+	width: 300px;
+	margin: 7px;
+	padding: 4px 8px;
+	background: #FFE;
+	border-radius: 8px;
+	box-shadow: 0 1px 2px 0 #333;
+}
